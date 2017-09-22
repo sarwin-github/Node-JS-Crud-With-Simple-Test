@@ -45,7 +45,7 @@ app.use(validator()); ///validator is a backend validator by express
 app.use(flash()); ///flash can be use to store messages or notification on session
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
 
 app.set('view engine', 'ejs'); ///Set the view engine to EJS

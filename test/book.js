@@ -1,17 +1,19 @@
 //During the test the env variable is set to test
 process.env.NODE_EN = 'test';
 
-const mongoose = require("mongoose");
-const Book     = require('../app/models/book');
+const mongoose       = require("mongoose");
+const Book           = require('../app/models/book');
 
 //Require the dev-dependencies
-const chai     = require('chai');
-const chaiHttp = require('chai-http');
-const server   = require('../server');
-const should   = chai.should();
-const expect   = chai.expect;
+const chai           = require('chai');
+const chaiHttp       = require('chai-http');
+const server         = require('../server');
+const should         = chai.should();
+const expect         = chai.expect;
+const csrf           = require('csurf');
+const csrfProtection = csrf();
 
-
+chai.use(require('chai-json-schema'));
 chai.use(chaiHttp);
 //Our parent block
 describe('Books', () => {
@@ -20,13 +22,11 @@ describe('Books', () => {
         done();         
       });     
     });
-  
   /*
-  * Initial test route
+  * Initial test route if route is valid
   */
   describe("/GET list of books:", () => {
-    // #1 should return home page
-    it('it should check if route is valid', (done) => {
+    it('it expect to check if route is valid', (done) => {
       chai.request(server)
         .get('/book/list')
         .end((err, res) => {
@@ -37,25 +37,46 @@ describe('Books', () => {
   });
 
   /*
-  * get all books
+  * Test the /Get for getting the list of all books
   */
   describe('/GET book:', () => {
-      it('it should GET all the books', (done) => {
+      it('it expect to GET all the books', (done) => {
         chai.request(server)
             .get('/book/list')
             .end((err, res) => {
                 expect(res).to.have.status(200);
-                expect(res).to.be.an('object');
+                expect(res).to.be.json;
+                expect(res.body).to.be.an('object');
+                expect(res.body.books).to.be.an('array');
+                expect(res.body.message).to.be.a('string');
+                expect(res.body.success).to.equal(true);
               done();
             });
       });
   });
 
   /*
-  * Test the /POST route
+  * Test the /Get for creating a new book
+  */
+  describe('/GET the form for creating new book:', () => {
+      it('it expect to GET the form for creating adding a new book', (done) => {
+        chai.request(server)
+            .get('/book/create')
+            .end((err, res) => {
+                expect(res).to.have.status(200);
+                expect(res).to.be.an('object');
+                expect(res.body.success).to.equal(true);
+              done();
+            });
+      });
+  });
+
+  /*
+  * Test the /POST route for creating new book
   */
   describe('/POST book', () => {
-    it('it should not POST a book without pages field', (done) => {
+    // with error, pages is required
+    it('it expect to not POST a book without pages field', (done) => {
       let book = {
         title: "The Lord of the Rings",
         author: "J.R.R. Tolkien",
@@ -63,16 +84,16 @@ describe('Books', () => {
       }
       chai.request(server)
         .post('/book/create')
-        .send(book)
+        .send( book )
         .end((err, res) => {
           // csrf token not yet implemented
-          expect(res).to.have.status(403);
+          expect(res).to.have.status(500);
           expect(res).to.be.an('object');
-          expect(res).to.have.property('error');
           done();
         });
     });
-    it('it should POST a book ', (done) => {
+    // without error success
+    it('it expect to POST a book ', (done) => {
       let book = {
         title: "The Lord of the Rings",
         author: "J.R.R. Tolkien",
@@ -81,11 +102,12 @@ describe('Books', () => {
       }
       chai.request(server)
         .post('/book/create')
-        .send(book)
+        .send( book )
         .end((err, res) => {
-          expect(res).to.have.status(403);
+          expect(res).to.have.status(200);
           expect(res).to.be.an('object');
-          expect(res).to.have.a.property('message').eql('Successfully added a new book!.');
+          expect(res.body.success).to.equal(true)
+          expect(res.body.message).to.equal('Successfully added a new book!.');
           done();
         });
     });

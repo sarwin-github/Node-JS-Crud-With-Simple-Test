@@ -37,9 +37,9 @@ module.exports.getBooks = (req, res) => {
 */
 module.exports.getCreateNewBook = (req, res) => {
 	res.status(200).json({
-		success : true,
-		message : 'You are trying to create a new book',
-		csrfToken : req.csrfToken()
+		success   : true,
+		message   : 'You are trying to create a new book',
+		//csrfToken : req.csrfToken()
 	});
 };
 
@@ -58,7 +58,7 @@ module.exports.postCreateNewBook = (req, res) => {
 			});
 		}
 
-		res.status(200).json({
+		res.status(200).send({
 			success: true,
 			message: 'Successfully added a new book!.'
 		});
@@ -87,7 +87,7 @@ module.exports.getBookDetails = (req, res) => {
 
 		res.status(200).json({
 			success   : true, 
-			message   : 'Successfully the details of the book.',
+			message   : 'Successfully fetched the details of the book.',
 			book      : book
 		});
 	});
@@ -117,7 +117,7 @@ module.exports.getUpdateBook = (req, res) => {
 			sucess    : true,
 			message   : 'You are trying to update a book',
 			book      : book,
-			csrfToken : req.csrfToken()
+			//csrfToken : req.csrfToken()
 		})
 	});
 };
