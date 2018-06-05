@@ -13,6 +13,7 @@ const morgan         = require('morgan');
 const methodOverride = require('method-override');
 const helmet         = require('helmet');
 const dotEnv         = require('dotenv').config();
+const csurf          = require('csurf');
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //Set database connection
@@ -60,6 +61,20 @@ app.use('/fonts/' , express.static(__dirname + '/node_modules/bootstrap/dist/fon
 app.use('/fonts/' , express.static(__dirname + '/node_modules/font-awesome/fonts'));
 app.use('/css/'   , express.static(__dirname + '/node_modules/font-awesome/css'));
 
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Anti csurf attack protection
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/* uncomment if you want to add csurf protection, 
+   csurf will be stored in cookies and local variable 
+
+app.use(csurf());
+
+app.use(function(req, res, next) {
+	res.cookie('XSRF-TOKEN', req.csrfToken());
+  	res.locals._csrf = req.csrfToken();
+ 	next();
+}); */
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //Set and Initialize Routes

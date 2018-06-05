@@ -1,11 +1,7 @@
 const express   = require('express');
-const csrf      = require('csurf');
 const router    = express();
 
 const bookController = require('../controller/book-controller');
-
-//const csrfProtection = csrf();
-//router.use(csrfProtection);
 
 // get list of book
 router.route('/list').get(bookController.getBooks);

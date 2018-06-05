@@ -1,7 +1,6 @@
 const mongoose       = require('mongoose');
 const Book           = require('../models/book');
 const csrf           = require('csurf');
-const csrfProtection = csrf();
 
 /*
 * Get the list of all books from mongodb
@@ -38,8 +37,7 @@ module.exports.getBooks = (req, res) => {
 module.exports.getCreateNewBook = (req, res) => {
 	res.status(200).json({
 		success   : true,
-		message   : 'You are trying to create a new book',
-		//csrfToken : req.csrfToken()
+		message   : 'You are trying to create a new book'
 	});
 };
 
@@ -116,8 +114,7 @@ module.exports.getUpdateBook = (req, res) => {
 		res.status(200).json({
 			sucess    : true,
 			message   : 'You are trying to update a book',
-			book      : book,
-			//csrfToken : req.csrfToken()
+			book      : book
 		})
 	});
 };
